@@ -75,7 +75,7 @@ class DynamoDBTests: XCTestCase {
             return scheduled.futureResult
         }
     }
-    
+
     func deleteTable(name: String) -> EventLoopFuture<Void> {
         // for some reason delete table is not working while running within a github action. works everywhere else
         // have verified this is an issue with awscli as well, so not an issue with aws-sdk-swift
@@ -85,17 +85,17 @@ class DynamoDBTests: XCTestCase {
         let input = DynamoDB.DeleteTableInput(tableName: name)
         return Self.dynamoDB.deleteTable(input).map { _ in }
     }
-    
+
     func putItem(tableName: String, values: [String: Any]) -> EventLoopFuture<DynamoDB.PutItemOutput> {
         let input = DynamoDB.PutItemInput(item: values.mapValues { DynamoDB.AttributeValue(any: $0) }, tableName: tableName)
         return Self.dynamoDB.putItem(input)
     }
-    
+
     func getItem(tableName: String, keys: [String: String]) -> EventLoopFuture<DynamoDB.GetItemOutput> {
         let input = DynamoDB.GetItemInput(key: keys.mapValues { DynamoDB.AttributeValue.s($0) }, tableName: tableName)
         return Self.dynamoDB.getItem(input)
     }
-    
+
     //MARK: TESTS
 
     func testCreateDeleteTable() {
@@ -106,7 +106,7 @@ class DynamoDBTests: XCTestCase {
         }
         XCTAssertNoThrow(try response.wait())
     }
-    
+
     func testGetObject() {
         let tableName = TestEnvironment.generateResourceName()
         let response = createTable(name: tableName, hashKey: "ID")
@@ -126,7 +126,7 @@ class DynamoDBTests: XCTestCase {
         }
         XCTAssertNoThrow(try response.wait())
     }
-    
+
     func testDataItem() {
         let tableName = TestEnvironment.generateResourceName()
         let data = Data("testdata".utf8)
@@ -146,7 +146,7 @@ class DynamoDBTests: XCTestCase {
         }
         XCTAssertNoThrow(try response.wait())
     }
-    
+
     func testNumberSetItem() {
         let tableName = TestEnvironment.generateResourceName()
         let response = createTable(name: tableName, hashKey: "ID")
@@ -199,4 +199,3 @@ extension DynamoDB.AttributeValue {
         }
     }
 }
-
